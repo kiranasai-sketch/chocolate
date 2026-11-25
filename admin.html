@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>แอดมิน – หยิบ/แพ็ค</title>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@500&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{font-family:Sarabun,sans-serif;margin:0;background:#f6efe6;color:#2e1a12}
+.w{max-width:960px;margin:auto;padding:20px}h1,h2{font-family:Mitr}
+button{font:600 15px Sarabun;padding:9px 16px;border-radius:6px;border:1px solid #2e1a12;background:#fff;cursor:pointer}
+button.p{background:#2e1a12;color:#fff}button:focus-visible{outline:3px solid #e0b25a}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{border:1px solid #d8c8b4;padding:8px;text-align:left}
+th{background:#2e1a12;color:#fff}.tabs{display:flex;gap:8px;margin:14px 0}
+.label{background:#fff;border:2px dashed #2e1a12;padding:14px;margin:12px 0;break-inside:avoid}
+.label h3{margin:0 0 6px;font-family:Mitr}.st{font-weight:600}
+@media print{.noprint{display:none}body{background:#fff}.label{border:2px solid #000}}
+</style></head><body><div class="w">
+<h1 class="noprint">หลังบ้าน: หยิบ / แพ็ค / ส่ง</h1>
+<div class="noprint"><button class="p" onclick="load()">โหลดออเดอร์ใหม่</button> <span id="info"></span></div>
+<div class="tabs noprint"><button onclick="show('pick')">ใบหยิบสินค้า</button><button onclick="show('ship')">ใบปะหน้าพัสดุ</button><button onclick="print()">พิมพ์</button></div>
+<div id="pick"></div><div id="ship" hidden></div></div>
+<script src="config.js"></script><script src="common.js"></script>
+<script>
+let O=[],P=[];const $=s=>document.querySelector(s);
+const key=()=>sessionStorage.k||(sessionStorage.k=prompt("รหัสแอดมิน"));
+function show(t){$("#pick").hidden=t!="pick";$("#ship").hidden=t!="ship"}
+async function load(){
+ P=await loadProducts().catch(()=>DEMO_PRODUCTS);
+ if(CONFIG.API_URL){const d=await (await fetch(`${CONFIG.API_URL}?action=orders&key=${encodeURIComponent(key())}`)).json();
+  if(!d.ok){sessionStorage.removeItem("k");$("#info").textContent="รหัสไม่ถูกต้อง";return}O=d.orders}
+ else{O=JSON.parse(localStorage.demoOrders||"[]").flatMap(o=>o.items.map(i=>({orderId:o.orderId,name:o.name,phone:o.phone,address:o.address,sku:i.sku,qty:i.qty,status:"รอหยิบ"})))}
+ draw()}
+function groups(){const g={};O.forEach(r=>{(g[r.orderId]??={id:r.orderId,name:r.name,phone:r.phone,address:r.address,status:r.status,items:[]}).items.push(r)});return Object.values(g)}
+function nameOf(s){return (P.find(p=>p.sku==s)||{}).name||s}
+function draw(){const pend=groups().filter(g=>g.status=="รอหยิบ");$("#info").textContent=`ออเดอร์รอหยิบ ${pend.length} รายการ`;
+ const tot={};pend.forEach(g=>g.items.forEach(i=>tot[i.sku]=(tot[i.sku]||0)+ +i.qty));
+ $("#pick").innerHTML=`<h2>ใบหยิบสินค้า (รวมทุกออเดอร์ที่รอหยิบ)</h2><table><tr><th>ชั้นวาง</th><th>SKU</th><th>สินค้า</th><th>จำนวนที่ต้องหยิบ</th></tr>`+
+  Object.entries(tot).sort((a,b)=>((P.find(p=>p.sku==a[0])||{}).shelf||"").localeCompare((P.find(p=>p.sku==b[0])||{}).shelf||"")).map(([s,q])=>`<tr><td>${(P.find(p=>p.sku==s)||{}).shelf||"-"}</td><td>${s}</td><td>${nameOf(s)}</td><td><b>${q}</b></td></tr>`).join("")+
+  `</table>`+(pend.length?`<p class="noprint"><button class="p" onclick="packAll()">หยิบครบแล้ว → แพ็คทั้งหมด</button></p>`:"<p>ไม่มีออเดอร์ค้าง</p>");
+ $("#ship").innerHTML=groups().map(g=>`<div class="label"><h3>ออเดอร์ ${g.id}</h3>
+  <div><b>ผู้รับ:</b> ${g.name} · ${g.phone}</div><div><b>ที่อยู่:</b> ${g.address}</div>
+  <div><b>รายการ:</b> ${g.items.map(i=>nameOf(i.sku)+" ×"+i.qty).join(", ")}</div>
+  <div class="st">สถานะ: ${g.status}</div></div>`).join("")||"ยังไม่มีออเดอร์"}
+async function packAll(){const ids=groups().filter(g=>g.status=="รอหยิบ").map(g=>g.id);
+ for(const id of ids){if(CONFIG.API_URL)await fetch(`${CONFIG.API_URL}?action=status&key=${encodeURIComponent(key())}&order=${id}&status=${encodeURIComponent("แพ็คแล้ว")}`);
+  O.filter(r=>r.orderId==id).forEach(r=>r.status="แพ็คแล้ว")}draw();show("ship")}
+load();
+</script></body></html>
