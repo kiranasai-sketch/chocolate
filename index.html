@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KOKO BAR – ช็อกโกแลตแท่งหนา</title>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--cacao:#2e1a12;--cacao2:#4a2a1c;--paper:#f6efe6;--wrap:#b3243f;--gold:#e0b25a;--ink:#2e1a12}
+*{box-sizing:border-box}body{margin:0;font-family:Sarabun,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6}
+h1,h2,h3,.brand{font-family:Mitr,sans-serif;font-weight:500;margin:0}
+.hero{background:var(--cacao);color:var(--paper);padding:48px 20px 64px}
+.wrap{max-width:1000px;margin:auto}
+.brand{letter-spacing:.08em;color:var(--gold);font-size:20px}
+.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;margin-top:28px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.15}
+.hero p{max-width:34ch;opacity:.85;font-size:18px}
+.btn{display:inline-block;background:var(--gold);color:var(--cacao);border:0;border-radius:6px;padding:12px 26px;font:600 17px Sarabun;cursor:pointer;text-decoration:none}
+.bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;transform:rotate(-4deg);padding:14px;background:var(--cacao2);border-radius:10px;box-shadow:0 18px 0 #1d100a}
+.bar i{aspect-ratio:1;border-radius:4px;background:linear-gradient(135deg,#6b3d28,#3a2016);box-shadow:inset 3px 3px 0 #8a5238,inset -3px -3px 0 #25130c}
+section{padding:48px 20px}
+h2{font-size:30px;margin-bottom:6px}.sub{margin:0 0 24px;opacity:.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+.card{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e3d6c6;display:flex;flex-direction:column}
+.card img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eadfce}
+.card div.b{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.price{font:500 22px Mitr;color:var(--wrap)}.stock{font-size:14px;opacity:.65}
+.qty{display:flex;align-items:center;gap:10px;margin-top:auto}
+.qty button{width:38px;height:38px;border-radius:6px;border:1px solid var(--cacao);background:#fff;font-size:20px;cursor:pointer}
+.qty b{min-width:26px;text-align:center;font-size:18px}
+form{background:#fff;border:1px solid #e3d6c6;border-radius:10px;padding:22px;display:grid;gap:14px;max-width:560px}
+label{display:grid;gap:4px;font-weight:600}
+input,textarea{font:inherit;padding:10px;border:1px solid #cbb9a4;border-radius:6px}
+input:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.sum{background:var(--cacao);color:var(--paper);border-radius:8px;padding:14px 16px;font-size:17px}
+.msg{padding:14px;border-radius:8px;display:none}.ok{background:#e1f1de;display:block}.err{background:#f9dcdc;display:block}
+footer{background:var(--cacao);color:#c9b8a6;text-align:center;padding:22px;font-size:14px}
+@media(max-width:700px){.hero-grid{grid-template-columns:1fr}.bar{max-width:280px}}
+</style></head><body>
+<header class="hero"><div class="wrap">
+ <div class="brand">KOKO BAR</div>
+ <div class="hero-grid"><div>
+  <h1>ช็อกโกแลตแท่งหนา กัดแล้วหักเสียงดัง</h1>
+  <p>คั่วเมล็ดโกโก้ในไทย ทำเป็นแท่ง 50 กรัม หยิบ แพ็ค ส่งตรงถึงบ้าน</p>
+  <a class="btn" href="#products">เลือกรสชาติ</a>
+ </div><div class="bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+</div></header>
+<section id="products"><div class="wrap">
+ <h2>รสชาติของเรา</h2><p class="sub">แท่งละ 50 กรัม สั่งกี่แท่งก็ได้</p>
+ <div class="grid" id="list">กำลังโหลดสินค้า…</div>
+</div></section>
+<section id="order" style="padding-top:0"><div class="wrap">
+ <h2>สั่งซื้อ</h2><p class="sub">กรอกที่อยู่จัดส่ง เราจะหยิบและแพ็คให้ตามออเดอร์</p>
+ <form id="f">
+  <div class="sum" id="sum">ยังไม่ได้เลือกสินค้า</div>
+  <label>ชื่อผู้รับ<input name="name" required autocomplete="name"></label>
+  <label>เบอร์โทร<input name="phone" required inputmode="tel" pattern="[0-9\- ]{9,12}" autocomplete="tel"></label>
+  <label>ที่อยู่จัดส่ง<textarea name="address" rows="3" required autocomplete="street-address"></textarea></label>
+  <button class="btn" id="go">สั่งซื้อ</button>
+  <div class="msg" id="msg" role="status"></div>
+ </form>
+</div></section>
+<footer>KOKO BAR · งานฝึกปฏิบัติรายวิชาการจัดการคลังสินค้า · <a href="admin.html" style="color:inherit">หน้าแอดมิน</a></footer>
+<script src="config.js"></script><script src="common.js"></script>
+<script>
+let P=[],cart={};
+const $=s=>document.querySelector(s);
+function render(){
+ $("#list").innerHTML=P.map(p=>`<article class="card"><img src="images/${p.image}" alt="${p.name}">
+ <div class="b"><h3>${p.name}</h3><div>${p.desc}</div><div class="price">${baht(p.price)}</div>
+ <div class="stock">${p.stock>0?`เหลือ ${p.stock} แท่ง`:"สินค้าหมด"}</div>
+ <div class="qty"><button type="button" aria-label="ลดจำนวน" onclick="chg('${p.sku}',-1)">−</button><b id="q-${p.sku}">0</b>
+ <button type="button" aria-label="เพิ่มจำนวน" onclick="chg('${p.sku}',1)" ${p.stock>0?"":"disabled"}>+</button></div></div></article>`).join("");
+}
+function chg(sku,d){const p=P.find(x=>x.sku==sku);const n=Math.max(0,Math.min(p.stock,(cart[sku]||0)+d));cart[sku]=n;$("#q-"+sku).textContent=n;sum()}
+function sum(){const it=P.filter(p=>cart[p.sku]>0);const t=it.reduce((a,p)=>a+p.price*cart[p.sku],0);
+ $("#sum").innerHTML=it.length?it.map(p=>`${p.name} × ${cart[p.sku]}`).join("<br>")+`<br><b>รวม ${baht(t)}</b>`:"ยังไม่ได้เลือกสินค้า"}
+$("#f").onsubmit=async e=>{e.preventDefault();const m=$("#msg");m.className="msg";
+ const items=P.filter(p=>cart[p.sku]>0).map(p=>({sku:p.sku,qty:cart[p.sku]}));
+ if(!items.length){m.className="msg err";m.textContent="เลือกสินค้าอย่างน้อย 1 แท่งก่อนสั่งซื้อ";return}
+ const fd=new FormData(e.target),body={action:"order",name:fd.get("name"),phone:fd.get("phone"),address:fd.get("address"),items};
+ $("#go").disabled=true;
+ try{let d;
+  if(CONFIG.API_URL){d=await (await fetch(CONFIG.API_URL,{method:"POST",body:JSON.stringify(body)})).json()}
+  else{const o=JSON.parse(localStorage.demoOrders||"[]");d={ok:true,orderId:"DEMO"+Date.now().toString().slice(-6)};localStorage.demoOrders=JSON.stringify([...o,{...body,orderId:d.orderId}])}
+  if(!d.ok)throw new Error(d.error||"สั่งซื้อไม่สำเร็จ");
+  m.className="msg ok";m.textContent=`สั่งซื้อสำเร็จ เลขออเดอร์ ${d.orderId} · ยอดรวม ${baht(d.total??items.reduce((a,i)=>a+i.qty*P.find(p=>p.sku==i.sku).price,0))}`;
+  cart={};render();sum();e.target.reset();
+ }catch(err){m.className="msg err";m.textContent="สั่งซื้อไม่สำเร็จ: "+err.message+" ลองใหม่อีกครั้ง"}
+ $("#go").disabled=false};
+loadProducts().then(p=>{P=p;render()}).catch(()=>$("#list").textContent="โหลดสินค้าไม่ได้ ตรวจลิงก์ CSV ใน config.js");
+</script></body></html>
